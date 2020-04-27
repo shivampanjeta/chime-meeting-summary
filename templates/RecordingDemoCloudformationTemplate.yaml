@@ -4,6 +4,14 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: 'AWS::Serverless-2016-10-31'
 Parameters:
+  RecordingFilesBucket:
+    Type: String
+    Default:
+      Fn::Join: ['', ['chime-meeting-sdk-', {Ref: 'AWS::AccountId'}, '-', {Ref: 'AWS::Region'}, '-recording-artifacts']]
+  TranscribedRecordingsBucket:
+    Type: String
+    Default:
+      Fn::Join: ['', ['chime-meeting-sdk-', {Ref: 'AWS::AccountId'}, '-', {Ref: 'AWS::Region'}, '-transcribed-recording-artifacts']]
   ECSTaskCpu:
     Type: Number
     Default: 4096
@@ -75,8 +83,65 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
         AccessControl: BucketOwnerFullControl
-        BucketName:
-          Fn::Join: ['', ['chime-meeting-sdk-', {Ref: 'AWS::AccountId'}, '-', {Ref: 'AWS::Region'}, '-recording-artifacts']]
+        BucketName: !Ref RecordingFilesBucket
+        NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: 's3:ObjectCreated:*'
+            Function: !GetAtt TranscribeRecordingLambdaFunction.Arn
+  
+  TranscribedRecordingArtifactsUploadBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+        AccessControl: BucketOwnerFullControl
+        BucketName: !Ref TranscribedRecordingsBucket
+        
+  TranscribeRecordingLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties: 
+      FunctionName: TranscribeRecordingLambda
+      Handler: transcriber.handler
+      Description: Lambda to convert the recordings to text.
+      Role:
+        Fn::GetAtt: [TranscribeRecordingLambdaExecutionRole, Arn]
+      Code: ../src/
+      Runtime: nodejs12.x
+      Timeout: 900
+      MemorySize: 3008
+      Environment:
+        Variables:
+          LANGUAGE_CODE: 'en-US'
+          OUTPUT_BUCKET: !Ref TranscribedRecordingsBucket
+  
+  S3InvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref TranscribeRecordingLambdaFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !Sub arn:aws:s3:::${RecordingFilesBucket}
+  
+  TranscribeRecordingLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: s3
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action:
+              - s3:Get*
+            Resource:
+              - !Sub arn:aws:s3:::${RecordingFilesBucket}
+              - !Sub arn:aws:s3:::${RecordingFilesBucket}/*
+
   RecordingDemoLambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
