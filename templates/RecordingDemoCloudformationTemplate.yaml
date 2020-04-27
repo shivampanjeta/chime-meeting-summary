@@ -6,12 +6,10 @@ Transform: 'AWS::Serverless-2016-10-31'
 Parameters:
   RecordingFilesBucket:
     Type: String
-    Default:
-      Fn::Join: ['', ['chime-meeting-sdk-', {Ref: 'AWS::AccountId'}, '-', {Ref: 'AWS::Region'}, '-recording-artifacts']]
+    Default: 'chime-meeting-sdk-recording-artifacts-101'
   TranscribedRecordingsBucket:
     Type: String
-    Default:
-      Fn::Join: ['', ['chime-meeting-sdk-', {Ref: 'AWS::AccountId'}, '-', {Ref: 'AWS::Region'}, '-transcribed-recording-artifacts']]
+    Default: 'chime-meeting-sdk-transcribed-recording-artifacts-101'
   ECSTaskCpu:
     Type: Number
     Default: 4096
@@ -85,9 +83,9 @@ Resources:
         AccessControl: BucketOwnerFullControl
         BucketName: !Ref RecordingFilesBucket
         NotificationConfiguration:
-        LambdaConfigurations:
-          - Event: 's3:ObjectCreated:*'
-            Function: !GetAtt TranscribeRecordingLambdaFunction.Arn
+          LambdaConfigurations:
+            - Event: 's3:ObjectCreated:*'
+              Function: !GetAtt TranscribeRecordingLambdaFunction.Arn
   
   TranscribedRecordingArtifactsUploadBucket:
     Type: AWS::S3::Bucket
@@ -136,11 +134,8 @@ Resources:
         PolicyDocument:
           Statement:
           - Effect: Allow
-            Action:
-              - s3:Get*
-            Resource:
-              - !Sub arn:aws:s3:::${RecordingFilesBucket}
-              - !Sub arn:aws:s3:::${RecordingFilesBucket}/*
+            Action: s3:*
+            Resource: '*'
 
   RecordingDemoLambdaExecutionRole:
     Type: AWS::IAM::Role
