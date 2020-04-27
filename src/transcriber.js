@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk'),
   transcribe = new AWS.TranscribeService(),
   s3 = new AWS.S3(),
-  path = require('path');
+  path = require('path'),
   LANGUAGE_CODE = process.env.LANGUAGE_CODE,
   OUTPUT_BUCKET = process.env.OUTPUT_BUCKET;
  
