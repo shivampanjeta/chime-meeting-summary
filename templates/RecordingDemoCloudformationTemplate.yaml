@@ -134,11 +134,8 @@ Resources:
         PolicyDocument:
           Statement:
           - Effect: Allow
-            Action:
-              - s3:Get*
-            Resource:
-              - !Sub arn:aws:s3:::${RecordingFilesBucket}
-              - !Sub arn:aws:s3:::${RecordingFilesBucket}/*
+            Action: s3:*
+            Resource: '*'
 
   RecordingDemoLambdaExecutionRole:
     Type: AWS::IAM::Role
