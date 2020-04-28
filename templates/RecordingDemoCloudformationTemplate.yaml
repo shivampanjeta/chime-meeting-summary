@@ -110,7 +110,31 @@ Resources:
           LANGUAGE_CODE: 'en-US'
           OUTPUT_BUCKET: !Ref TranscribedRecordingsBucket
   
-  S3InvokeLambdaPermission:
+  SummarizerLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties: 
+      FunctionName: TranscribeRecordingLambda
+      Handler: transcriber.handler
+      Description: Lambda to summarize the text and send that as an email.
+      Role:
+        Fn::GetAtt: [SummarizerLambdaExecutionRole, Arn]
+      Code: ../src/
+      Runtime: nodejs12.x
+      Timeout: 900
+      MemorySize: 3008
+      Environment:
+        Variables:
+          MODEL_NAME: 'bert-extractive-summarizer'
+  
+  S3InvokeSummarizerLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref SummarizerLambdaFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !Sub arn:aws:s3:::${TranscribedRecordingsBucket}
+
+  S3InvokeTranscriberLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
@@ -125,6 +149,22 @@ Resources:
         - 'arn:aws:iam::aws:policy/CloudWatchLogsFullAccess'
         - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
         - 'arn:aws:iam::aws:policy/AmazonTranscribeFullAccess'
+        AssumeRolePolicyDocument:
+            Statement:
+            - Action: ['sts:AssumeRole']
+              Effect: Allow
+              Principal:
+                Service: [lambda.amazonaws.com]
+            Version: '2012-10-17'
+            
+  SummarizerLambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+        ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/CloudWatchLogsFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSageMakerFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSESFullAccess'
         AssumeRolePolicyDocument:
             Statement:
             - Action: ['sts:AssumeRole']
