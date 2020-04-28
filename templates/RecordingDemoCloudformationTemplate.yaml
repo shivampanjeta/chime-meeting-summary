@@ -113,7 +113,7 @@ Resources:
   SummarizerLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties: 
-      FunctionName: TranscribeRecordingLambda
+      FunctionName: SummarizerLambda
       Handler: summarizer.handler
       Description: Lambda to summarize the text and send that as an email.
       Role:
