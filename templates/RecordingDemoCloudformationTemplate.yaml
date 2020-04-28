@@ -101,7 +101,7 @@ Resources:
       Description: Lambda to convert the recordings to text.
       Role:
         Fn::GetAtt: [TranscribeRecordingLambdaExecutionRole, Arn]
-      Code: ../src/transcriber.js
+      Code: ../src/
       Runtime: nodejs12.x
       Timeout: 900
       MemorySize: 3008
@@ -182,7 +182,7 @@ Resources:
             Ref: ECSRecordingDemoTaskDefinition
           recordingArtifactsBucket:
             Ref: RecordingArtifactsUploadBucket
-      CodeUri: ../src/index.js
+      CodeUri: ../src/
       Events:
         Api1:
           Type: Api
