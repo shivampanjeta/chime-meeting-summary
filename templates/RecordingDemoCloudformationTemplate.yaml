@@ -124,7 +124,7 @@ Resources:
       MemorySize: 3008
       Environment:
         Variables:
-          MODEL_NAME: 'bert-extractive-summarizer'
+          ENDPOINT_NAME: 'bert-extractive-summarizer'
   
   S3InvokeSummarizerLambdaPermission:
     Type: AWS::Lambda::Permission
