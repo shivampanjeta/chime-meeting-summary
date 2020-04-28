@@ -4,7 +4,7 @@ This Demo Generate a brief summary of a chime meeting and email that to the meet
 We record the meeting using Amazon Chime SDK and using a lambda function save the audio file to an S3 bucket. With the help of a second lambda function, we use AWS Transcribe on the audio file and convert it into a text file and upload this text file to an S3 bucket. Using the third lambda function we call Amazon Sagemaker which has an image of a summariser which creates a summary from the text file using BERT. Further, we use AWS SNS to email this file which constitutes the summary of the meeting in text to the meeting inviter.
 
 ## Architecture Diagram
-
+![Architecture Diagram](https://github.com/shivampanjeta/chime-meeting-recordings/blob/master/resources/architecture-diagram.png)
 
 
 ## Prerequisites
