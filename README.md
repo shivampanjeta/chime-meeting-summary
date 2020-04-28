@@ -101,7 +101,7 @@ The above step deploys a AWS CloudFormation stack that creates resources needed 
 
 2. Deploy the demo using:
     ```
-    node ./deploy.js -r us-east-1 -b <my-bucket> -s <my-stack-name> -a meeting
+    npm run deploy -- -r us-east-1 -b <my-bucket> -s <my-stack-name> -a meeting
     ```
    The script will create an Amazon S3 bucket and AWS CloudFormation stack with Amazon Lambda and Amazon API Gateway resources required to run this demo. After the script finishes, it will output a URL that can be opened in a browser.
 
