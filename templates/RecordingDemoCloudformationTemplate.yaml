@@ -121,21 +121,16 @@ Resources:
   TranscribeRecordingLambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
-      Policies:
-      - PolicyName: s3
-        PolicyDocument:
-          Statement:
-          - Effect: Allow
-            Action: 's3:*'
-            Resource: '*'
+        ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/CloudWatchLogsFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        AssumeRolePolicyDocument:
+            Statement:
+            - Action: ['sts:AssumeRole']
+              Effect: Allow
+              Principal:
+                Service: [lambda.amazonaws.com]
+            Version: '2012-10-17'
 
   RecordingDemoLambdaExecutionRole:
     Type: AWS::IAM::Role
