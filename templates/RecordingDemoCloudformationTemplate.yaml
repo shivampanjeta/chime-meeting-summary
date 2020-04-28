@@ -6,10 +6,10 @@ Transform: 'AWS::Serverless-2016-10-31'
 Parameters:
   RecordingFilesBucket:
     Type: String
-    Default: 'chime-meeting-sdk-recording-artifacts-12109'
+    Default: 'chime-meeting-sdk-recording-artifacts-12911'
   TranscribedRecordingsBucket:
     Type: String
-    Default: 'chime-meeting-sdk-transcribed-recording-artifacts-12109'
+    Default: 'chime-meeting-sdk-transcribed-recording-artifacts-12911'
   ECSTaskCpu:
     Type: Number
     Default: 4096
