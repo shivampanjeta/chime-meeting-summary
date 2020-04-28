@@ -23,6 +23,7 @@ exports.handler = (event, context, callback) => {
             const transcribedText = record.results.transcripts[0].transcript;
             var params = {
               Body: transcribedText,
+              ContentType: 'application/json',
               EndpointName: ENDPOINT_NAME
             };
             sagemakerruntime.invokeEndpoint(params, function(err, data) {
