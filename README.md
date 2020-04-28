@@ -1,6 +1,11 @@
-## Amazon Chime SDK recording demo
+## Amazon Chime Meeting Summary Creator demo
+This Demo Generate a brief summary of a chime meeting and email that to the meeting inviter’s email.
 
-This repository contains resources for building a demo application that records media from Amazon Chime SDK meeting sessions. Included is a Docker image and serverless AWS CloudFormation templates that you can deploy to your AWS Account. The Walkthrough will show you how to create a container using the Docker image and upload it to Amazon Elastic Container Registry (ECR), which is referenced by a Amazon Elastic Container Service (ECS) task. AWS CloudFormation templates orchestrate resources (including Amazon APIGateway, Amazon Lambda, and Amazon ECS) that run the recording demo application. When deployed, the startRecording API will enable "a bot" (i.e. a headless meeting attendee) to join an Amazon Chime SDK meeting session via a URL and record the meeting's audio, video and screen share in high definition (1080p at 30fps by default, but configurable) and stream output to a specified Amazon S3 bucket. The stopRecording API will stop the ECS task and complete the upload.
+We record the meeting using Amazon Chime SDK and using a lambda function save the audio file to an S3 bucket. With the help of a second lambda function, we use AWS Transcribe on the audio file and convert it into a text file and upload this text file to an S3 bucket. Using the third lambda function we call Amazon Sagemaker which has an image of a summariser which creates a summary from the text file using BERT. Further, we use AWS SNS to email this file which constitutes the summary of the meeting in text to the meeting inviter.
+
+## Architecture Diagram
+
+
 
 ## Prerequisites
 
@@ -56,7 +61,7 @@ The sections as enumerated below will walk you through the process of creating a
 
 2. In the AWS Cloud9 instance, execute the following commands to download the recording demo.
     ```
-    git clone https://github.com/aws-samples/amazon-chime-sdk-recording-demo.git
+    git clone https://github.com/shivampanjeta/chime-meeting-recordings.git
     cd amazon-chime-sdk-recording-demo
     ```
 
