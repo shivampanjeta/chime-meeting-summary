@@ -75,6 +75,40 @@ The sections as enumerated below will walk you through the process of creating a
     
     **Note:** If this command fails due to AWS CLI version 2.0 not available, you can follow the instructions given here: [Installing the AWS CLI version 2 on Linux](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html) and try again.
 
+### Create an Endpoint for Bert Extractive Summarizer Model on Sagemaker
+1. In the AWS Cloud9 instance, run the below command to create a repository in Amazon ECR
+    ```
+    aws ecr create-repository --repository-name <repository-name>
+    ```
+    You will get a response similar to this
+    ```
+    {
+        "repository": {
+            "repositoryArn": "arn:aws:ecr:us-east-1:123456789012:repository/bert-sagemaker-inference",
+            "registryId": "123456789012",
+            "repositoryName": "chime-sdk-recording-demo",
+            "repositoryUri": "123456789012.dkr.ecr.us-east-1.amazonaws.com/bert-sagemaker-inference",
+            "createdAt": 1585247726.0,
+            "imageTagMutability": "MUTABLE",
+            "imageScanningConfiguration": {
+                "scanOnPush": false
+            }
+        }
+    }
+    ```
+2. In the AWS Cloud9 instance, execute the following commands to download the recording demo.
+    ```
+    git clone https://github.com/shivampanjeta/sagemaker-inference.git
+    cd sagemaker-inference
+    ```
+3. Execute the following command to create a Amazon ECR repository, build and push the docker image to Amazon ECR
+    ```
+    sh build_and_push.sh
+    ````
+4. Create a Model on AWS Sagemaker by referencing to the ECR URI created after the last step.
+5. Use that model for creating an Endpoint Configuration in Sagemaker.
+6. Create an Endpoint with the created Enpoint Configuration in the last step, this Endpoint will be invoked from the [summarizer lambda](https://github.com/shivampanjeta/chime-meeting-summary/blob/master/src/summarizer.js)
+
 ### Deploy an Amazon Chime SDK Recording AWS CloudFormation Template
 
 1. Execute the following command to create a AWS CloudFormation stack containing an Amazon ECS cluster, Amazon ECS task definition, Amazon S3 bucket, Amazon Lambda and an Amazon API Gateway deployment along with IAM roles and networking resources required for the Amazon ECS Cluster including an Amazon VPC, subnets, security groups, and an auto-scaling group.
