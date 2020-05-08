@@ -74,6 +74,21 @@ The sections as enumerated below will walk you through the process of creating a
     ![ECR Repo](https://github.com/aws-samples/amazon-chime-sdk-recording-demo/blob/master/resources/ecr-repository-with-docker-image.png)
     
     **Note:** If this command fails due to AWS CLI version 2.0 not available, you can follow the instructions given here: [Installing the AWS CLI version 2 on Linux](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html) and try again.
+    
+### Deploy an Amazon Chime SDK Recording AWS CloudFormation Template
+
+1. Execute the following command to create a AWS CloudFormation stack containing an Amazon ECS cluster, Amazon ECS task definition, Amazon S3 bucket, Amazon Lambda and an Amazon API Gateway deployment along with IAM roles and networking resources required for the Amazon ECS Cluster including an Amazon VPC, subnets, security groups, and an auto-scaling group.
+    ```
+    node ./deploy.js -b <my-bucket> -s <my-stack> -i <my-docker-image-uri> -r <region>
+    ```
+   
+   Here is an example:
+    ```
+    node ./deploy.js -b recording-demo-cnf-deploy-bucket -s recording-demo-cnf-stack -i 123456789012.dkr.ecr.us-east-1.amazonaws.com/recording-demo:latest -r us-east-1
+    ```
+The above step deploys a AWS CloudFormation stack that creates resources needed to run the recording service. It may take several minutes to complete. You will get an Amazon API Gateway invoke URL in the output.
+
+![Deploy output](https://github.com/aws-samples/amazon-chime-sdk-recording-demo/blob/master/resources/deploy-script-output.png)
 
 ### Create an Endpoint for Bert Extractive Summarizer Model on Sagemaker
 1. In the AWS Cloud9 instance, run the below command to create a repository in Amazon ECR
@@ -108,21 +123,6 @@ The sections as enumerated below will walk you through the process of creating a
 4. Create a Model on AWS Sagemaker by referencing to the ECR URI created after the last step.
 5. Use that model for creating an Endpoint Configuration in Sagemaker.
 6. Create an Endpoint with the created Enpoint Configuration in the last step, this Endpoint will be invoked from the [summarizer lambda](https://github.com/shivampanjeta/chime-meeting-summary/blob/master/src/summarizer.js)
-
-### Deploy an Amazon Chime SDK Recording AWS CloudFormation Template
-
-1. Execute the following command to create a AWS CloudFormation stack containing an Amazon ECS cluster, Amazon ECS task definition, Amazon S3 bucket, Amazon Lambda and an Amazon API Gateway deployment along with IAM roles and networking resources required for the Amazon ECS Cluster including an Amazon VPC, subnets, security groups, and an auto-scaling group.
-    ```
-    node ./deploy.js -b <my-bucket> -s <my-stack> -i <my-docker-image-uri> -r <region>
-    ```
-   
-   Here is an example:
-    ```
-    node ./deploy.js -b recording-demo-cnf-deploy-bucket -s recording-demo-cnf-stack -i 123456789012.dkr.ecr.us-east-1.amazonaws.com/recording-demo:latest -r us-east-1
-    ```
-The above step deploys a AWS CloudFormation stack that creates resources needed to run the recording service. It may take several minutes to complete. You will get an Amazon API Gateway invoke URL in the output.
-
-![Deploy output](https://github.com/aws-samples/amazon-chime-sdk-recording-demo/blob/master/resources/deploy-script-output.png)
 
 ### Start an Amazon Chime SDK meeting with our serverless demo and join with multiple participants
 
